@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧬 Demon Test  
+# 🧬 Cripto Test  
 ### Sistema de Codificação Multicamadas • Interface Web
 
 Um projeto experimental focado em **obfuscação**, **transformações determinísticas** e **estudo de codificação de strings**.  

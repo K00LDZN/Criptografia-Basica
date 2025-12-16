@@ -1,30 +1,26 @@
-import {code, decode} from './coder.js';
+import { code, decode } from "./coder.js";
 
-    const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-    const inp = $("code");
-    const out = $("result");
+const input  = $("input");
+const output = $("output");
 
-    $("codebtn").onclick = () => {
-      try {
-        out.textContent = code(inp.value);
-      } catch (e) {
-        out.textContent = "ERR: " + e;
-      }
-    };
+$("encode").onclick = () => run(code);
+$("decode").onclick = () => run(decode);
 
-    $("decodebtn").onclick = () => {
-      try {
-        out.textContent = decode(inp.value);
-      } catch (e) {
-        out.textContent = "ERR: " + e;
-      }
-    };
-    $("copy").onclick = async ()=>{
+$("copy").onclick = async () => {
   try {
-    await navigator.clipboard.writeText(out.textContent);
-    console.log('Copiado!');
-  } catch (err) {
-    console.error('Falha ao copiar:', err);
+    await navigator.clipboard.writeText(output.textContent);
+    console.log("Copiado!");
+  } catch {
+    console.error("Falha ao copiar");
+  }
+};
+
+function run(fn) {
+  try {
+    output.textContent = fn(input.value);
+  } catch (e) {
+    output.textContent = "ERR: " + e.message;
   }
 }

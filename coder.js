@@ -1,1 +1,79 @@
-const π="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. !?",arcano="ᚠᚡᚢᚣᚤᚥᚦᚧᚨᚩᚪᚫᚬᚭᚮᚯᚰᚱᚲᚳᚴᚵᚶᚷᚸᚹᚺᚻᚼᚽᚾᚿᛀᛁᛂᛃᛄᛅᛆᛇᛈᛉᛊᛋᛌᛍᛎᛏᛐᛑᛒᛓᛔᛕᛖᛗᛘᛙᛚᛛᛜᛝᛞᛟ",sib="☠⚰⚱⚵⚶⚷☣☥☯⚛⚡⛧⛨⛩☢☨☩✞✟✠✡☄⚙⚗⚚⚒⚔⚜⚑⚐☘☙☁☂☃❄❅❆✦✧✩✪✫✬✭✮✯✰✱✲✳✴✵✶✷✸✹✺✻✼✽✾✿❀❁❂",b64="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",utf8_to_b64=s=>btoa(unescape(encodeURIComponent(s))),b64_to_utf8=s=>decodeURIComponent(escape(atob(s)));const txtToArcano=t=>{let r="";for(let i=0;i<t.length;i++){let x=π.indexOf(t[i]);if(x<0)x=0;r+=arcano[x]}return r};const arcanoToB64=a=>utf8_to_b64(a);const b64ToSib=b=>{let r="";for(let i=0;i<b.length;i++){let x=b64.indexOf(b[i]);if(x<0)x=0;r+=sib[x]}return r};const fimDoMundo=s=>{let m="";for(let i=0;i<s.length;i++){let c=s.charCodeAt(i)^((i*31)%255);m+=String.fromCharCode(c)}return utf8_to_b64(m)};const corromper=a=>a.replace(/./g,(c,i)=>c+(i%17===0?String.fromCharCode(8203):""));export const code=x=>{let A=txtToArcano(x),B=arcanoToB64(A),C=b64ToSib(B),D=fimDoMundo(C),E=corromper(D);return E;};const limpar=a=>a.replace(/[\u200B\u200C\u200D]/g,"");const desfim=a=>{a=b64_to_utf8(a);let r="";for(let i=0;i<a.length;i++){let c=a.charCodeAt(i)^((i*31)%255);r+=String.fromCharCode(c)}return r};const sibToB64=s=>{let r="";for(let i=0;i<s.length;i++){let x=sib.indexOf(s[i]);if(x<0)x=0;r+=b64[x]}return r};const b64ToArc=a=>b64_to_utf8(a);const arcToTxt=a=>{let r="";for(let i=0;i<a.length;i++){let x=arcano.indexOf(a[i]);if(x<0)x=0;r+=π[x]}return r};export const decode=x=>{let A=limpar(x),B=desfim(A),C=sibToB64(B),D=b64ToArc(C),E=arcToTxt(D);return E;};
+// Mapas base
+const BASE =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. !?";
+
+const ARCANO =
+  "ᚠᚡᚢᚣᚤᚥᚦᚧᚨᚩᚪᚫᚬᚭᚮᚯᚰᚱᚲᚳᚴᚵᚶᚷᚸᚹᚺᚻᚼᚽᚾᚿᛀᛁᛂᛃᛄᛅᛆᛇᛈᛉᛊᛋᛌᛍᛎᛏᛐᛑᛒᛓᛔᛕᛖᛗᛘᛙᛚᛛᛜᛝᛞᛟ";
+
+const SIB =
+  "☠⚰⚱⚵⚶⚷☣☥☯⚛⚡⛧⛨⛩☢☨☩✞✟✠✡☄⚙⚗⚚⚒⚔⚜⚑⚐☘☙☁☂☃❄❅❆✦✧✩✪✫✬✭✮✯✰✱✲✳✴✵✶✷✸✹✺✻✼✽✾✿❀❁❂";
+
+const B64 =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+// Utils
+const utf8ToB64 = s =>
+  btoa(unescape(encodeURIComponent(s)));
+
+const b64ToUtf8 = s =>
+  decodeURIComponent(escape(atob(s)));
+
+// Etapas
+const txtToArcano = txt =>
+  [...txt].map(c => ARCANO[BASE.indexOf(c) || 0]).join("");
+
+const arcanoToTxt = arc =>
+  [...arc].map(c => BASE[ARCANO.indexOf(c) || 0]).join("");
+
+const b64ToSib = b64 =>
+  [...b64].map(c => SIB[B64.indexOf(c) || 0]).join("");
+
+const sibToB64 = sib =>
+  [...sib].map(c => B64[SIB.indexOf(c) || 0]).join("");
+
+const xorShift = txt => {
+  let out = "";
+  for (let i = 0; i < txt.length; i++) {
+    out += String.fromCharCode(
+      txt.charCodeAt(i) ^ ((i * 31) % 255)
+    );
+  }
+  return out;
+};
+
+const corromper = txt =>
+  txt.replace(/./g, (c, i) =>
+    c + (i % 17 === 0 ? "\u200B" : "")
+  );
+
+const limpar = txt =>
+  txt.replace(/[\u200B\u200C\u200D]/g, "");
+
+// API
+export function code(text) {
+  return corromper(
+    utf8ToB64(
+      xorShift(
+        b64ToSib(
+          utf8ToB64(
+            txtToArcano(text)
+          )
+        )
+      )
+    )
+  );
+}
+
+export function decode(text) {
+  return arcanoToTxt(
+    b64ToUtf8(
+      sibToB64(
+        xorShift(
+          b64ToUtf8(
+            limpar(text)
+          )
+        )
+      )
+    )
+  );
+                                                   }
